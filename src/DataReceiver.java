@@ -2,24 +2,30 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 
 public class DataReceiver implements Runnable {
+    DatagramSocket ds;
+
+    public DataReceiver(DatagramSocket ds) {
+        this.ds = ds;
+    }
+
+    @Override
     public void run() {
         try {
-            DatagramSocket ds = new DatagramSocket(5000);
-
             while (true) {
                 DatagramPacket dp = new DatagramPacket(new byte[1024], 1024);
                 ds.receive(dp);
 
-                String str = new String(dp.getData(), 0, dp.getLength());
-                if(str.equalsIgnoreCase("disconnect")) {
+                String message = new String(dp.getData(), 0, dp.getLength());
+
+                if (message.equalsIgnoreCase("disconnect")) {
                     break;
                 }
 
-                System.out.println(str);
+                String output = String.format("[%s] %s", dp.getAddress().toString().replace("/", ""), message);
+                System.out.println(output);
             }
-
-            ds.close();
         } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

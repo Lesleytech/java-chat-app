@@ -3,16 +3,20 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class DataSender {
-    public DataSender() {
-        try {
-            DatagramSocket ds = new DatagramSocket();
-            String str = "Hello world";
-            InetAddress ip = InetAddress.getByName("127.0.0.1");
+    DatagramSocket ds;
+    InetAddress ip;
 
-            DatagramPacket dp = new DatagramPacket(str.getBytes(), str.length(), ip, 5000);
+    public DataSender(DatagramSocket ds, InetAddress ip) {
+        this.ds = ds;
+        this.ip = ip;
+    }
+
+    public void send(String message) {
+        try {
+            DatagramPacket dp = new DatagramPacket(message.getBytes(), message.length(), ip, Config.UDP_PORT);
             ds.send(dp);
-            ds.close();
-            System.out.println("DataSender quit");
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
