@@ -9,13 +9,14 @@ public class Server {
         try {
             ServerSocket serverSocket = new ServerSocket(Config.TCP_PORT);
             DatagramSocket datagramSocket;
-            System.out.println("Waiting for connection...");
 
             while (true) {
+                System.out.println("Waiting for connection...");
+
                 Socket incoming = serverSocket.accept();
-                datagramSocket = new DatagramSocket(Config.UDP_PORT);
+                datagramSocket = new DatagramSocket(Config.SERVER_UDP_PORT);
                 InetAddress ip = incoming.getInetAddress();
-                DataSender ds = new DataSender(datagramSocket, ip);
+                DataSender ds = new DataSender(datagramSocket, ip, Config.CLIENT_UDP_PORT);
                 Scanner scanner = new Scanner(System.in);
                 Thread drThread = new Thread(new DataReceiver(datagramSocket));
 
@@ -34,10 +35,6 @@ public class Server {
                         break;
                     }
                 }
-
-                // This will stale the Server thread while waiting for messages.
-                // When it receives the 'disconnect' message, execution will continue and all sockets are closed.
-                drThread.join();
 
                 incoming.close();
                 datagramSocket.close();

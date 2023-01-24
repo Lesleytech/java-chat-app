@@ -8,9 +8,9 @@ public class Client {
         String host = args[0];
 
         try {
-            DatagramSocket datagramSocket = new DatagramSocket(Config.UDP_PORT);
+            DatagramSocket datagramSocket = new DatagramSocket(Config.CLIENT_UDP_PORT);
             Socket socket = new Socket(InetAddress.getByName(host), Config.TCP_PORT);
-            DataSender ds = new DataSender(datagramSocket, socket.getInetAddress());
+            DataSender ds = new DataSender(datagramSocket, socket.getInetAddress(), Config.SERVER_UDP_PORT);
             Scanner scanner = new Scanner(System.in);
             Thread drThread = new Thread(new DataReceiver(datagramSocket));
 
@@ -27,10 +27,7 @@ public class Client {
                 }
             }
 
-            // This will stale the Server thread while waiting for messages.
-            // When it receives the 'disconnect' message, execution will continue and all sockets are closed.
-            drThread.join();
-
+            datagramSocket.close();
             socket.close();
         } catch (Exception e) {
             e.printStackTrace();

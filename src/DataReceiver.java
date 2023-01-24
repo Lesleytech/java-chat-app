@@ -18,14 +18,13 @@ public class DataReceiver implements Runnable {
                 String message = new String(dp.getData(), 0, dp.getLength());
 
                 if (message.equalsIgnoreCase("disconnect")) {
+                    System.out.println("Peer left! Type 'disconnect' to end session");
                     break;
                 }
 
                 String output = String.format("[%s] %s", dp.getAddress().toString().replace("/", ""), message);
                 System.out.println(output);
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) {}
     }
 }
